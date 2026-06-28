@@ -1,9 +1,5 @@
 ﻿using CapCanvo.Core.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CapCanvo.Core.Entities;
 
 namespace CapCanvo.Core.Interfaces
 {
@@ -11,5 +7,6 @@ namespace CapCanvo.Core.Interfaces
     {
         Task<BoardResponse> CreateBoardAsync(string ownerId, string ownerName, CreateBoardRequest request);
         Task<List<BoardResponse>> GetMyBoardsAsync(string userId);
+        Task<Board> GetBoard(string id, string userId); 
     }
 }

@@ -15,10 +15,13 @@ public class UserService : IUserService
     {
         _context = context;
     }
-
+    
+    public async Task<User> GetAsync(string id)
+    {
+        return await _context.Users.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
     public async Task<User?> GetByClerkIdAsync(string clerkId) =>
         await _context.Users.Find(u => u.ClerkId == clerkId).FirstOrDefaultAsync();
-
 
     public async Task<User> CreateAsync(User user)
     {

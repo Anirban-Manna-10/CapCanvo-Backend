@@ -23,5 +23,7 @@ namespace CapCanvo.Core.Entities
 
         [BsonElement("updatedAt")]
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        [BsonIgnoreIfDefault, BsonIgnoreIfNull]
+        public List<BoardMember> BoardMember { get; set; } = new();
     }
 }

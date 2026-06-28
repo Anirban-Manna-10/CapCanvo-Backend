@@ -21,7 +21,6 @@
   <ItemGroup>
     <Folder Include="Hubs\" />
     <Folder Include="Middleware\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>

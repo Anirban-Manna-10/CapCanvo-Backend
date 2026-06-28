@@ -19,8 +19,7 @@ namespace CapCanvo.Infrastructure.Services
             _boardMemberRepository = boardMemberRepository;
         }
 
-        public async Task<BoardResponse> CreateBoardAsync(
-            string ownerId, string ownerName, CreateBoardRequest request)
+        public async Task<BoardResponse> CreateBoardAsync(string ownerId, string ownerName, CreateBoardRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Title))
                 throw new ArgumentException("Board title is required.");
@@ -52,8 +51,6 @@ namespace CapCanvo.Infrastructure.Services
             // boards I own, directly
             var owned = await _boardRepository.GetByOwnerIdAsync(userId);
 
-            // boards I'm a member of (covers Editor/Viewer; Owner rows also exist here
-            // but we dedupe by board Id below so owned boards aren't doubled)
             var memberships = await _boardMemberRepository.GetByUserIdAsync(userId);
             var memberBoardIds = memberships.Select(m => m.BoardId).ToHashSet();
 
@@ -70,6 +67,28 @@ namespace CapCanvo.Infrastructure.Services
 
             return result.OrderByDescending(b => b.CreatedAt).ToList();
         }
+        /// <summary>
+        /// GetFull Board details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Board> GetBoard(string id, string userId) {
+            Board res = new();
+            var board = await _boardRepository.GetByIdAsync(id) ?? throw new DirectoryNotFoundException("Not Found");
+            var boardMembers = await _boardMemberRepository.GetByBoardIdAsync(id);
+            if (boardMembers == null || boardMembers.Count() == 0)
+                return res;
+
+            if(boardMembers.Any(x => x.UserId == userId))
+            {
+                res = await _boardRepository.GetByIdAsync(id) ?? res;
+                if(res is not null)
+                    res.BoardMember = boardMembers;
+            }
+            return res;
+            //need to add logic for Add the current user As Owner as some defaults might happend
+        }
+
 
         private static BoardResponse ToResponse(Board board) => new()
         {
