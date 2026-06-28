@@ -21,7 +21,7 @@ namespace CapCanvo.API.Controllers
         [Authorize]
         public async Task<IActionResult> SyncUser([FromBody] SyncUserRequest request)
         {
-            var clerkId = User.FindFirst("sub")?.Value
+            var clerkId = User. ("sub")?.Value
             ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(clerkId))
                 return Unauthorized();

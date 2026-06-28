@@ -57,14 +57,9 @@ namespace CapCanvo.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBoard(string id)
         {
-            var userId = User.GetUserId();
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
-
-            var user = await _userService.GetByClerkIdAsync(userId);
+            var user = await _userService.GetCurrentUser(User);
             if (user is null)
                 return Unauthorized();
-
 
             var board = await _boardService.GetBoard(id, user.Id);
             if (board is null)

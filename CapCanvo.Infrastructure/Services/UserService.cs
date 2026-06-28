@@ -4,6 +4,7 @@ using CapCanvo.Core.Entities;
 using CapCanvo.Core.Interfaces;
 using CapCanvo.Infrastructure.Persistence;
 using MongoDB.Driver;
+using System.Security.Claims;
 
 namespace CapCanvo.Infrastructure.Services;
 
@@ -20,7 +21,7 @@ public class UserService : IUserService
     {
         return await _context.Users.Find(x => x.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<User?> GetByClerkIdAsync(string clerkId) =>
+    public async Task<User> GetByClerkIdAsync(string clerkId) =>
         await _context.Users.Find(u => u.ClerkId == clerkId).FirstOrDefaultAsync();
 
     public async Task<User> CreateAsync(User user)
@@ -71,4 +72,14 @@ public class UserService : IUserService
         AvatarUrl = user.AvatarUrl,
         CreatedAt = user.CreatedAt
     };
+
+    public async Task<User> GetCurrentUser(ClaimsPrincipal User)
+    {
+        User res = new();
+        var userId = User.FindFirst("sub")?.Value;
+        if (string.IsNullOrEmpty(userId))
+            return res;
+
+        return await GetByClerkIdAsync(userId);
+    }
 }
